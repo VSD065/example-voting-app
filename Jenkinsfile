@@ -2,25 +2,23 @@ pipeline {
     agent any
 
     environment {
-        // Define environment variables here
         GCP_PROJECT_ID = 'crack-atlas-430705-a1'
         GCP_CREDENTIALS = '/var/lib/jenkins/gcp-key.json'
     }
-   triggers {
-        // Poll SCM every minute
-        pollSCM('H/1 * * * *')
+
+    triggers {
+        pollSCM('H/5 * * * *') // Adjust polling frequency if needed
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/VSD065/example-voting-app.git'
+                git branch: 'main', url: 'https://github.com/VSD065/example-voting-app.git'
             }
         }
 
         stage('Run Tests') {
             steps {
-                // Run tests here, for example, using Docker Compose
                 script {
                     sh 'docker-compose -f docker-compose.yml up --abort-on-container-exit'
                 }
@@ -38,7 +36,6 @@ pipeline {
         stage('Deploy to GCP') {
             steps {
                 script {
-                    // Use gcloud CLI to deploy the application
                     sh '''
                         gcloud auth activate-service-account --key-file=$GCP_CREDENTIALS
                         gcloud config set project $GCP_PROJECT_ID
@@ -54,18 +51,18 @@ pipeline {
             }
             steps {
                 script {
-                    // Rollback steps, such as redeploying the previous version or using a different strategy
                     sh 'echo "Rollback logic here"'
+                    // Implement actual rollback logic
                 }
             }
         }
     }
 
     post {
-    always {
-        echo 'This will always run'
-        cleanWs() // Clean workspace after the build
+        always {
+            echo 'This will always run'
+            cleanWs() // Clean workspace after the build
+        }
     }
 }
 
-}
