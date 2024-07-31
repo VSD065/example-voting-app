@@ -4,7 +4,7 @@ pipeline {
     environment {
         // Define environment variables here
         GCP_PROJECT_ID = 'crack-atlas-430705-a1'
-        GCP_CREDENTIALS = credentials('gcp-service-account')
+        GCP_CREDENTIALS = '/var/lib/jenkins/gcp-key.json'
     }
    triggers {
         // Poll SCM every minute
