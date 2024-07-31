@@ -62,8 +62,10 @@ pipeline {
     }
 
     post {
-        always {
-            // Cleanup or notification steps, if any
-        }
+    always {
+        echo 'This will always run'
+        cleanWs() // Clean workspace after the build
     }
+}
+
 }
